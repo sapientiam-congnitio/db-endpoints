@@ -50,6 +50,7 @@ def get_companies_for_event(event_id):
     try:
         response = supabase.table('events').select('*').eq('id', event_id).execute()
         event_data = response.data
+        print(event_data)
         if not event_data:
             return jsonify({"error": "Event not found"}), 404
         event = event_data[0]
@@ -98,33 +99,20 @@ def get_company(company_id):
         print(f"Error fetching company: {e}")
         return jsonify({'error': 'Error fetching company'}), 500
 
-@app.route('/companies/<int:company_id>/events', methods=['GET'])
-def get_events_for_company(company_id):
+@app.route('/event-company-matches/<int:company_id>', methods=['GET'])
+def get_event_company_matches(company_id):
     """
-    Retrieve events that match a specific company.
+    Retrieve a list of all event-company matches.
     """
-    # Fetch company details
     try:
-        response = supabase.table('companies').select('*').eq('id', company_id).execute()
-        company_data = response.data
-        if not company_data:
-            return jsonify({"error": "Company not found"}), 404
-        company = company_data[0]
+        # Fetch data from the 'event_company_matches' table
+        response = supabase.table('event_company_matches').select('*').eq('company_id', company_id).execute()
+        matches = response.data
+        return jsonify({'matches': matches}), 200
     except Exception as e:
-        print(f"Error fetching company: {e}")
-        return jsonify({"error": "Error fetching company"}), 500
+        print(f"Error fetching event-company matches: {e}")
+        return jsonify({'error': 'Error fetching event-company matches'}), 500
 
-    # Fetch matching events
-    try:
-        response = supabase.rpc('get_company_events', {'company_id_input': company_id}).execute()
-        matching_events = response.data
-        return jsonify({
-            'company': company,
-            'matching_events': matching_events
-        }), 200
-    except Exception as e:
-        print(f"Error fetching matching events: {e}")
-        return jsonify({"error": "Error fetching matching events"}), 500
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
