@@ -1,0 +1,7 @@
+.get-venv/
+__pycache__/
+*.py[cod]
+.flaskenv
+.python-version
+*.log
+*.tmp
