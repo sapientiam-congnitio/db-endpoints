@@ -114,7 +114,7 @@ def get_event_company_matches(company_id):
         return jsonify({'error': 'Error fetching event-company matches'}), 500
     
 @app.route('/event-company-matches', methods=['GET'])
-def get_event_company_matches():
+def get_all_event_company_matches():
     """
     Retrieve a list of all event-company matches.
     """
