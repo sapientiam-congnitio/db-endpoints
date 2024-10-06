@@ -112,6 +112,20 @@ def get_event_company_matches(company_id):
     except Exception as e:
         print(f"Error fetching event-company matches: {e}")
         return jsonify({'error': 'Error fetching event-company matches'}), 500
+    
+@app.route('/event-company-matches', methods=['GET'])
+def get_event_company_matches():
+    """
+    Retrieve a list of all event-company matches.
+    """
+    try:
+        # Fetch data from the 'event_company_matches' table
+        response = supabase.table('event_company_matches').select('*').execute()
+        matches = response.data
+        return jsonify({'matches': matches}), 200
+    except Exception as e:
+        print(f"Error fetching event-company matches: {e}")
+        return jsonify({'error': 'Error fetching event-company matches'}), 500
 
 
 if __name__ == "__main__":
